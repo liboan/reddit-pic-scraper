@@ -15,7 +15,7 @@ def timeString(): #creates timestring for file names
 	string = str(datetime.now().year) + str(datetime.now().month) + str(datetime.now().day) + "_" + str(datetime.now().hour) + str(datetime.now().minute) + str(datetime.now().second)
 	return string
 
-subreddit = "spaceporn"
+subreddit = input("Enter a subreddit\n")
 
 directory = "images/" #directory in which images will be stored
 

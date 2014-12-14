@@ -2,6 +2,7 @@ import urllib3
 import json
 from datetime import datetime
 import re
+import os.path
 
 urllib3.disable_warnings() #disable warning from popping up on console- perhaps implement HTTPS as they suggest?
 
@@ -27,18 +28,33 @@ linkArray = reddit.getLinks(data["data"]["children"])
 initTime = timeString() #get initial time for file names
 
 imgCount = 0
-imageLinkArray = []
+
+urlArray = [] #list of urls from reddit that are images
+
+imageInfoArray = [] #list of image info objects from this session
+
+arrayFromJSON = [] #list pulled from JSON log
+
+if os.path.isfile("log.json"):
+	print("opening log.json")
+	arrayFromJSON = image.openJSONLog()
+else: 
+	print("creating log.json")
+	file = open("log.json", "w+")
 
 for url in linkArray: #placeholder for now- pulls only the image links from the subreddit link list, to be counted
 	if (image.checkURL(url) != False):
 		imgCount = imgCount + 1
-		imageLinkArray.append(url) 
+		urlArray.append(url) 
 
-print("Starting download of " + str(len(imageLinkArray)) + " images from /r/" + subreddit)
+print("Starting download of " + str(len(urlArray)) + " images from /r/" + subreddit)
 
-for num, url in enumerate(imageLinkArray,start=1): #iterates through imageLinkArray, names files with initTime + index, then downloads.
+for num, url in enumerate(urlArray,start=1): #iterates through imageInfoArray, names files with initTime + index, then downloads.
 	name = directory + initTime + "_" + str(num)
-	print("Downloading image " + str(num) + " of " + str(len(imageLinkArray)))
-	image.fetchImage(url,name)
+	print("Downloading image " + str(num) + " of " + str(1+len(imageInfoArray)))
+	image.fetchImage(url,name, imageInfoArray)
+
+print(imageInfoArray)
+image.writeJSONLog(arrayFromJSON + imageInfoArray) #merge two arrays and write
 
 
